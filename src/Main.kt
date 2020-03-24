@@ -136,3 +136,8 @@ while (result.next()){
     println()
 }
 println()*/
+
+
+
+//select student.name,student.surname from student
+//where not exists (select stud_id from mark where mark<71 and mark.stud_id = student.id)
