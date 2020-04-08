@@ -86,11 +86,10 @@ fun main() {
         }
     }
 
-    val sq = "SELECT id,concat(surname,' ',n,'.',p,'.') as fio, mmark, stipendiya " +
-            "FROM (select sid as id,surname,n,p,min(mark) as mmark, IF(min(mark)=4,1800,IF(min(mark)=5,2600,0)) as stipendiya from" +
+    val sq = "select sid as id,concat(surname,' ',n,'.',p,'.') as fio,min(mark) as mmark, IF(min(mark)=4,1800,IF(min(mark)=5,2600,0)) as stipendiya from" +
             "(Select student.id as sid, surname, substring(name, 1, 1) as n, substring(patronymic, 1, 1) as p, 2*(year(now())-admission)-if(month(now())=1,2,if(month(now())>=2 and month(now())<=6,1,0)) as sess from student) as studsess " +
             "INNER JOIN(select subj_id, stud_id, if(mark<56,2,if(mark<71,3,if(mark<86,4,5))) as mark, semester from mark inner join subject on subject.id = subj_id) as marks " +
-            "ON sid=marks.stud_id group by sid) as stds WHERE mmark>=4"
+            "ON sid=marks.stud_id group by sid"
 
     val result = s.executeQuery(sq)
     while (result.next()) {
