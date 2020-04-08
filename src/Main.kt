@@ -86,45 +86,9 @@ fun main() {
         }
     }
 
-    //Список студенов определенной группы
-    /*val sc = Scanner(System.`in`)
-    val group_num = sc.next()
-    val sq1 = "SELECT name,surname,patronymic " +
-            "FROM `student` " +
-            "WHERE group_num='$group_num' " +
-            "ORDER BY surname, name, patronymic;"
-    val result1 = s.executeQuery(sq1)
-    while (result1.next()) {
-        print(result1.getString("surname"))
-        print(" ")
-        print(result1.getString("name"))
-        print(" ")
-        print(result1.getString("patronymic"))
-        println()
-    }*/
-
-    //Вывод среднего балла судента
-    val sq2 = "SELECT student.name, student.surname, student.patronymic, AVG(mark) "+
-            "FROM `student` "+
-            "INNER JOIN `mark` "+
-            "ON student.id=mark.stud_id "+
-            "GROUP BY mark.stud_id;"
-    val result2 = s.executeQuery(sq2)
-    while (result2.next()) {
-        print(result2.getString("surname"))
-        print(" ")
-        print(result2.getString("name"))
-        print(" ")
-        print(result2.getString("patronymic"))
-        print(" ")
-        print(result2.getString("AVG(mark)"))
-        println()
-    }
-
-    println("-----------------------------------------")
-    //Вывод стипендии студентов
     val sq4 = "SELECT id,concat(surname,' ',n,'.',p,'.') as fio, mmark, stipendiya " +
-            "FROM (select sid as id,surname,n,p,min(mark) as mmark, IF(min(mark)=4,1800,IF(min(mark)=5,2600,0)) as stipendiya from (Select student.id as sid, surname, substring(name, 1, 1) as n, substring(patronymic, 1, 1) as p, 2*(year(now())-admission)-if(month(now())=1,2,if(month(now())>=2 and month(now())<=6,1,0)) as sess from student) as studsess " +
+            "FROM (select sid as id,surname,n,p,min(mark) as mmark, IF(min(mark)=4,1800,IF(min(mark)=5,2600,0)) as stipendiya from" +
+            "(Select student.id as sid, surname, substring(name, 1, 1) as n, substring(patronymic, 1, 1) as p, 2*(year(now())-admission)-if(month(now())=1,2,if(month(now())>=2 and month(now())<=6,1,0)) as sess from student) as studsess " +
             "INNER JOIN(select subj_id, stud_id, if(mark<56,2,if(mark<71,3,if(mark<86,4,5))) as mark, semester from mark inner join subject on subject.id = subj_id) as marks " +
             "ON sid=marks.stud_id group by sid) as stds WHERE mmark>=4"
 
