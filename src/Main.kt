@@ -8,7 +8,7 @@ import java.util.*
 
 fun main() {
     val c: Connection = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/studentsbd?serverTimezone=UTC",
+        "jdbc:mysql://localhost:3306/stdbd1?serverTimezone=UTC",
         "bash",
         "123"
     )
@@ -28,7 +28,7 @@ fun main() {
             "patronymic varchar(30), " +
             "group_num varchar(6) not null, " +
             "birth date not null, " +
-            "start_date year not null" +
+            "admission year not null" +
             ");"
 
     val ct2: String = "create table if not exists `subject` ("+
@@ -121,23 +121,20 @@ fun main() {
         println()
     }
 
+    println("-----------------------------------------")
+    //Вывод стипендии студентов
+    val sq4 = "SELECT id,concat(surname,' ',n,'.',p,'.') as fio, mmark, stipendiya " +
+            "FROM (select sid as id,surname,n,p,min(mark) as mmark, IF(min(mark)=4,1800,IF(min(mark)=5,2600,0)) as stipendiya from (Select student.id as sid, surname, substring(name, 1, 1) as n, substring(patronymic, 1, 1) as p, 2*(year(now())-admission)-if(month(now())=1,2,if(month(now())>=2 and month(now())<=6,1,0)) as sess from student) as studsess " +
+            "INNER JOIN(select subj_id, stud_id, if(mark<56,2,if(mark<71,3,if(mark<86,4,5))) as mark, semester from mark inner join subject on subject.id = subj_id) as marks " +
+            "ON sid=marks.stud_id group by sid) as stds WHERE mmark>=4"
+
+    val result4 = s.executeQuery(sq4)
+    while (result4.next()) {
+        print(result4.getString("fio"))
+        print(" ")
+        print(result4.getString("mmark"))
+        print(" ")
+        print(result4.getString("stipendiya"))
+        println()
+    }
 }
-
-
-/*var groupNum = Scanner(System.`in`).next()
-var SQLrequest = "SELECT * FROM `students` WHERE `Student_group` ='$groupNum'"
-val result = s.executeQuery(SQLrequest)
-while (result.next()){
-    print(result.getString("SURNAME"))
-    print(" ")
-    print(result.getString("NAME"))
-    print(" ")
-    print(result.getString("FATHERNAME"))
-    println()
-}
-println()*/
-
-
-
-//select student.name,student.surname from student
-//where not exists (select stud_id from mark where mark<71 and mark.stud_id = student.id)
